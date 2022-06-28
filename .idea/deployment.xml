@@ -30,6 +30,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="cxx@211.87.232.110:22 password (1)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="zzh@211.87.232.110:22">
         <serverdata>
           <mappings>
@@ -45,13 +52,6 @@
         </serverdata>
       </paths>
       <paths name="zzh@211.87.232.142:22 (2)">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="zzh@211.87.232.142:22 (3)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
