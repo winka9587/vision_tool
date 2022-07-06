@@ -1,4 +1,3 @@
-# coding=utf-8
 import os
 import cv2
 import numpy as np
@@ -7,10 +6,10 @@ import numpy as np
 def pjoin(*a):
     """
         A path join function suitable for both ubuntu and windows
-        é€‚ç”¨äºubuntuå’Œwindowsçš„è·¯å¾„æ‹¼æ¥å‡½æ•°
+        ÊÊÓÃÓÚubuntuºÍwindowsµÄÂ·¾¶Æ´½Óº¯Êı
     Args:
         *a: The path waitting for join
-        ä½¿ç”¨ç¤ºä¾‹: path=pjoin('/data1/','001.png')
+        Ê¹ÓÃÊ¾Àı: path=pjoin('/data1/','001.png')
     """
     path = a[0]
     for i in range(len(a)):
@@ -23,9 +22,9 @@ def pjoin(*a):
 
 def load_obj(path_to_file):
     """
-        åŠ è½½objæ¨¡å‹
+        ¼ÓÔØobjÄ£ĞÍ
     Args:
-        path_to_file: objæ¨¡å‹è·¯å¾„
+        path_to_file: objÄ£ĞÍÂ·¾¶
     """
     vertices = []
     faces = []
@@ -48,9 +47,9 @@ def load_obj(path_to_file):
 
 def load_depth(depth_path):
     """
-        åŠ è½½æ·±åº¦å›¾
+        ¼ÓÔØÉî¶ÈÍ¼
     Args:
-        depth_path: æ·±åº¦å›¾è·¯å¾„
+        depth_path: Éî¶ÈÍ¼Â·¾¶
     """
     depth = cv2.imread(depth_path, -1)
     if len(depth.shape) == 3:
@@ -68,13 +67,13 @@ def load_depth(depth_path):
 
 def get_bbox(bbox, img_height=480, img_width=640):
     """
-        ç»™å®šæ£€æµ‹çš„é•¿æ–¹å½¢bboxçš„ä¸¤ä¸ªåæ ‡(x1, y1)å’Œ(x2, y2)ï¼Œ è®¡ç®—å‡ºå…¶åœ¨å›¾åƒä¸Šçš„æ­£æ–¹å½¢è£å‰ªåŒºåŸŸï¼Œç”¨äºè£å‰ªä»¥åŠä¹‹åçš„å·ç§¯ç­‰æ“ä½œ
+        ¸ø¶¨¼ì²âµÄ³¤·½ĞÎbboxµÄÁ½¸ö×ø±ê(x1, y1)ºÍ(x2, y2)£¬ ¼ÆËã³öÆäÔÚÍ¼ÏñÉÏµÄÕı·½ĞÎ²Ã¼ôÇøÓò£¬ÓÃÓÚ²Ã¼ôÒÔ¼°Ö®ºóµÄ¾í»ıµÈ²Ù×÷
     Args:
-        bbox: æ£€æµ‹ç»“æœ (y1, x1, y2, x2)
-        img_heigth: å›¾åƒçš„é«˜
-        img_width: å›¾åƒçš„å®½
+        bbox: ¼ì²â½á¹û (y1, x1, y2, x2)
+        img_heigth: Í¼ÏñµÄ¸ß
+        img_width: Í¼ÏñµÄ¿í
     Return:
-        rmin, rmax, cmin, cmax: è£å‰ªå›¾åƒ,ä¾‹å¦‚: img[rmin:rmax, cmin:cmax, :]
+        rmin, rmax, cmin, cmax: ²Ã¼ôÍ¼Ïñ,ÀıÈç: img[rmin:rmax, cmin:cmax, :]
     """
     y1, x1, y2, x2 = bbox
     window_size = (max(y2-y1, x2-x1) // 40 + 1) * 40
