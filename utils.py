@@ -3,28 +3,11 @@ import cv2
 import numpy as np
 
 
-def pjoin(*a):
-    """
-        A path join function suitable for both ubuntu and windows
-        适用于ubuntu和windows的路径拼接函数
-    Args:
-        *a: The path waitting for join
-        使用示例: path=pjoin('/data1/','001.png')
-    """
-    path = a[0]
-    for i in range(len(a)):
-        if i==0:
-            continue
-        else:
-            path = os.path.join(path, a[i]).replace('\\', '/')
-    return path
-
-
 def load_obj(path_to_file):
     """
-        加载obj模型
-    Args:
-        path_to_file: obj模型路径
+    加载obj模型
+    :param path_to_file: obj模型路径
+    :return: vertices, faces 顶点 和 面片
     """
     vertices = []
     faces = []
@@ -47,9 +30,9 @@ def load_obj(path_to_file):
 
 def load_depth(depth_path):
     """
-        加载深度图
-    Args:
-        depth_path: 深度图路径
+    加载深度图
+    :param depth_path: 深度图路径
+    :return: depth16 深度图 np.uint16
     """
     depth = cv2.imread(depth_path, -1)
     if len(depth.shape) == 3:
@@ -67,13 +50,11 @@ def load_depth(depth_path):
 
 def get_bbox(bbox, img_height=480, img_width=640):
     """
-        给定检测的长方形bbox的两个坐标(x1, y1)和(x2, y2)， 计算出其在图像上的正方形裁剪区域，用于裁剪以及之后的卷积等操作
-    Args:
-        bbox: 检测结果 (y1, x1, y2, x2)
-        img_heigth: 图像的高
-        img_width: 图像的宽
-    Return:
-        rmin, rmax, cmin, cmax: 裁剪图像,例如: img[rmin:rmax, cmin:cmax, :]
+    给定检测的长方形bbox的两个坐标(x1, y1)和(x2, y2)， 计算出其在图像上的正方形裁剪区域，用于裁剪以及之后的卷积等操作
+    :param bbox: 检测算法的结果 (y1, x1, y2, x2)
+    :param img_height: 图像的高
+    :param img_width: 图像的宽
+    :return: rmin, rmax, cmin, cmax 边界值, 用于裁剪图像,例如: img[rmin:rmax, cmin:cmax, :]
     """
     y1, x1, y2, x2 = bbox
     window_size = (max(y2-y1, x2-x1) // 40 + 1) * 40
