@@ -1,11 +1,27 @@
 import os
 import cv2
 import numpy as np
+import imageio
+
+def pjoin(*a):
+    """
+    适用于ubuntu和windows的路径拼接函数
+    :param a: *a: The path waitting for join 使用示例: path=pjoin('/data1/','001.png')q
+    :return: 拼接后的路径
+    """
+    path = a[0]
+    for i in range(len(a)):
+        if i==0:
+            continue
+        else:
+            path = os.path.join(path, a[i]).replace('\\', '/')
+    return path
 
 
 def load_obj(path_to_file):
     """
     加载obj模型
+    可将vertices作为点云来可视化
     :param path_to_file: obj模型路径
     :return: vertices, faces 顶点 和 面片
     """
@@ -81,3 +97,14 @@ def get_bbox(bbox, img_height=480, img_width=640):
         cmax = img_width
         cmin -= delt
     return rmin, rmax, cmin, cmax
+
+
+def ConvertImgsToGif(inputFolderPath, outputPath):
+    # windows下建议使用ScreenToGif, 更容易控制gif的各种参数
+    files = os.listdir(inputFolderPath)
+    imgs = []
+    for filename in files:
+        if not filename.endswith('png'):
+            continue
+        imgs.append(cv2.imread(pjoin(inputFolderPath, filename)))
+
