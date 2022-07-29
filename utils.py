@@ -1,7 +1,6 @@
 import os
 import cv2
 import numpy as np
-import imageio
 
 def pjoin(*a):
     """
@@ -97,14 +96,3 @@ def get_bbox(bbox, img_height=480, img_width=640):
         cmax = img_width
         cmin -= delt
     return rmin, rmax, cmin, cmax
-
-
-def ConvertImgsToGif(inputFolderPath, outputPath):
-    # windows下建议使用ScreenToGif, 更容易控制gif的各种参数
-    files = os.listdir(inputFolderPath)
-    imgs = []
-    for filename in files:
-        if not filename.endswith('png'):
-            continue
-        imgs.append(cv2.imread(pjoin(inputFolderPath, filename)))
-
