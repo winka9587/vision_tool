@@ -1,12 +1,13 @@
+# coding=utf-8
 import os
 import cv2
 import numpy as np
 
 def pjoin(*a):
     """
-    ÊÊÓÃÓÚubuntuºÍwindowsµÄÂ·¾¶Æ´½Óº¯Êı
-    :param a: *a: The path waitting for join Ê¹ÓÃÊ¾Àı: path=pjoin('/data1/','001.png')q
-    :return: Æ´½ÓºóµÄÂ·¾¶
+    é€‚ç”¨äºubuntuå’Œwindowsçš„è·¯å¾„æ‹¼æ¥å‡½æ•°
+    :param a: *a: The path waitting for join ä½¿ç”¨ç¤ºä¾‹: path=pjoin('/data1/','001.png')q
+    :return: æ‹¼æ¥åçš„è·¯å¾„
     """
     path = a[0]
     for i in range(len(a)):
@@ -19,10 +20,10 @@ def pjoin(*a):
 
 def load_obj(path_to_file):
     """
-    ¼ÓÔØobjÄ£ĞÍ
-    ¿É½«vertices×÷ÎªµãÔÆÀ´¿ÉÊÓ»¯
-    :param path_to_file: objÄ£ĞÍÂ·¾¶
-    :return: vertices, faces ¶¥µã ºÍ ÃæÆ¬
+    åŠ è½½objæ¨¡å‹
+    å¯å°†verticesä½œä¸ºç‚¹äº‘æ¥å¯è§†åŒ–
+    :param path_to_file: objæ¨¡å‹è·¯å¾„
+    :return: vertices, faces é¡¶ç‚¹ å’Œ é¢ç‰‡
     """
     vertices = []
     faces = []
@@ -45,9 +46,9 @@ def load_obj(path_to_file):
 
 def load_depth(depth_path):
     """
-    ¼ÓÔØÉî¶ÈÍ¼
-    :param depth_path: Éî¶ÈÍ¼Â·¾¶
-    :return: depth16 Éî¶ÈÍ¼ np.uint16
+    åŠ è½½æ·±åº¦å›¾
+    :param depth_path: æ·±åº¦å›¾è·¯å¾„
+    :return: depth16 æ·±åº¦å›¾ np.uint16
     """
     depth = cv2.imread(depth_path, -1)
     if len(depth.shape) == 3:
@@ -65,11 +66,11 @@ def load_depth(depth_path):
 
 def get_bbox(bbox, img_height=480, img_width=640):
     """
-    ¸ø¶¨¼ì²âµÄ³¤·½ĞÎbboxµÄÁ½¸ö×ø±ê(x1, y1)ºÍ(x2, y2)£¬ ¼ÆËã³öÆäÔÚÍ¼ÏñÉÏµÄÕı·½ĞÎ²Ã¼ôÇøÓò£¬ÓÃÓÚ²Ã¼ôÒÔ¼°Ö®ºóµÄ¾í»ıµÈ²Ù×÷
-    :param bbox: ¼ì²âËã·¨µÄ½á¹û (y1, x1, y2, x2)
-    :param img_height: Í¼ÏñµÄ¸ß
-    :param img_width: Í¼ÏñµÄ¿í
-    :return: rmin, rmax, cmin, cmax ±ß½çÖµ, ÓÃÓÚ²Ã¼ôÍ¼Ïñ,ÀıÈç: img[rmin:rmax, cmin:cmax, :]
+    ç»™å®šæ£€æµ‹çš„é•¿æ–¹å½¢bboxçš„ä¸¤ä¸ªåæ ‡(x1, y1)å’Œ(x2, y2)ï¼Œ è®¡ç®—å‡ºå…¶åœ¨å›¾åƒä¸Šçš„æ­£æ–¹å½¢è£å‰ªåŒºåŸŸï¼Œç”¨äºè£å‰ªä»¥åŠä¹‹åçš„å·ç§¯ç­‰æ“ä½œ
+    :param bbox: æ£€æµ‹ç®—æ³•çš„ç»“æœ (y1, x1, y2, x2)
+    :param img_height: å›¾åƒçš„é«˜
+    :param img_width: å›¾åƒçš„å®½
+    :return: rmin, rmax, cmin, cmax è¾¹ç•Œå€¼, ç”¨äºè£å‰ªå›¾åƒ,ä¾‹å¦‚: img[rmin:rmax, cmin:cmax, :]
     """
     y1, x1, y2, x2 = bbox
     window_size = (max(y2-y1, x2-x1) // 40 + 1) * 40
