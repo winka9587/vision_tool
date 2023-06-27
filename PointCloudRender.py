@@ -18,7 +18,7 @@ def pjoin(*a):
     """
     path = a[0]
     for i in range(len(a)):
-        if i==0:
+        if i == 0:
             continue
         else:
             path = os.path.join(path, a[i]).replace('\\', '/')
