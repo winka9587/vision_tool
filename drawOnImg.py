@@ -45,6 +45,75 @@ def viz_target_on_img(target_, intrinsic_, img_, r ,g, b):
             # img[v_, u_, 2] = r
     return img, uv
 
+
+"""
+    根据mask, 获得2d包围盒(正方形, 可用于卷积等操作)
+    input:
+        y1, x1, y2, x2 = bbox
+        (x1, y1)为左下角坐标
+        (x2, y2)为右上角坐标(x轴为水平, y轴数值的坐标系下)
+    output:
+        rmin, rmax, cmin, cmax : (c: col, r: row)
+        
+    
+    40是根据经验得到的
+    min(window_size, 440)限制了包围盒的最大大小, 可根据实际使用进行修改
+"""
+def get_bbox(bbox, width=640, height=480):
+    """ Compute square image crop window. """
+    y1, x1, y2, x2 = bbox
+    img_height = height
+    img_width = width
+    window_size = (max(y2-y1, x2-x1) // 40 + 1) * 40
+    window_size = min(window_size, 440)
+    center = [(y1 + y2) // 2, (x1 + x2) // 2]
+    rmin = center[0] - int(window_size / 2)
+    rmax = center[0] + int(window_size / 2)
+    cmin = center[1] - int(window_size / 2)
+    cmax = center[1] + int(window_size / 2)
+    if rmin < 0:
+        delt = -rmin
+        rmin = 0
+        rmax += delt
+    if cmin < 0:
+        delt = -cmin
+        cmin = 0
+        cmax += delt
+    if rmax > img_height:
+        delt = rmax - img_height
+        rmax = img_height
+        rmin -= delt
+    if cmax > img_width:
+        delt = cmax - img_width
+        cmax = img_width
+        cmin -= delt
+    return rmin, rmax, cmin, cmax
+
+
+"""
+    在图像上绘制2d包围盒
+    input:
+        img_input: (w, h, 3)
+        bbox: list, cmin, cmax, rmin, rmax
+        (c: col, r: row)
+    output:
+        img: img with 2d bbox
+"""
+def draw_bounding_box(img_input, bbox, color=[0, 255, 0], title="Image with Bounding Box"):
+    cmin, cmax, rmin, rmax = bbox
+    r, g, b = color
+    img = img_input.copy()
+    # 在图像上绘制包围盒
+    cv2.rectangle(img, (cmin, rmin), (cmax, rmax), (r, g, b), 2)
+
+    # 显示带有包围盒的图像
+    cv2.imshow(title, img)
+    cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    return img
+
+
+
 def run(save_path="", save=False):
     intrinsics = np.array([[572.41140, 0, 325.26110], [0, 573.57043, 242.04899], [0, 0, 1]])
     img_ = color
