@@ -130,9 +130,9 @@ class PointCloudRender:
         # 修复, color_list 现在可以接收单独定义每个点的颜色(1,3) -> (1, 3) 或 (n, 3)
         result_dir: 存储图片的路径, 如果为None则不会保存 例如: "/data/cat"
     """
-    def render_multi_pts(name, pts_list, color_list, save_dir=None, save_img=False, show_coord=True):
+    def render_multi_pts(self, win_name, pts_list, color_list, save_dir=None, save_img=False, show_coord=True):
         vis = o3d.visualization.Visualizer()
-        vis.create_window(window_name=name, width=512, height=512, left=300, top=300)
+        vis.create_window(window_name=win_name, width=512, height=512, left=300, top=300)
         opt = vis.get_render_option()
         opt.show_coordinate_frame = show_coord
         assert len(pts_list) == len(color_list)
