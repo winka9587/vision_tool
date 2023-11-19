@@ -203,6 +203,10 @@ def save_pcd_to_obj(img_path, target_model, sampling_npts=2048, save_path=None):
         print("save point cloud to {}".format(save_path))
 
 
+
+    
+
+
 if __name__ == '__main__':
     # 读取深度图并将可视化的深度图保存
     # in_path = r"F:\BaiduSyncdisk\VR2024\fig\framework\scene6\0066_depth.png"
