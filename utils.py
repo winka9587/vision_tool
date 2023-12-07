@@ -49,6 +49,24 @@ def load_depth(depth_path):
     return depth16
 
 
+def convert_2d_to_3d(coords, depth, K):
+    # Flatten the depth image and select the depths at the 2D coordinates
+    depth_masked = depth[coords[:, 0], coords[:, 1]].flatten()[:, np.newaxis]
+
+    # Compute the x and y coordinates in the camera frame
+    xmap_masked = coords[:, 1][:, np.newaxis]
+    ymap_masked = coords[:, 0][:, np.newaxis]
+
+    # Compute the 3D points in the camera frame
+    pt2 = depth_masked / K[2, 2]
+    pt0 = (xmap_masked - K[0, 2]) * pt2 / K[0, 0]
+    pt1 = (ymap_masked - K[1, 2]) * pt2 / K[1, 1]
+
+    # Concatenate the x, y, and z coordinates to form the 3D points
+    points = np.concatenate((pt0, pt1, pt2), axis=1)
+
+    return points
+
 def get_bbox(bbox, img_height=480, img_width=640):
     """
     给定检测的长方形bbox的两个坐标(x1, y1)和(x2, y2)， 计算出其在图像上的正方形裁剪区域，用于裁剪以及之后的卷积等操作
