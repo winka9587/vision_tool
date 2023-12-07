@@ -1,5 +1,5 @@
 
-import cv
+import cv2
 
 """
     This code comes from https://github.com/winka9587/zzh-linemod-viz/blob/f5a4a75a758aa3ba2645cf189bfefc09b1d8b2a4/tools/eval_LM2_occ.py
@@ -27,11 +27,12 @@ def get_corners(model):
         [min_x, max_y, max_z],
         [min_x, min_y, max_z],
     ])
-
+import numpy as np
 def project_PVNet(pts_3d, intrinsic_matrix):
     pts_2d = np.matmul(pts_3d, intrinsic_matrix.T)
     pts_2d = pts_2d[:, :2] / pts_2d[:, 2:]
     return pts_2d
+
 def viz_target_on_img(target_, intrinsic_, img_, r ,g, b):
     img = img_.copy()
     uv_target_ = project_PVNet(target_, intrinsic_).astype(np.int32)
@@ -40,9 +41,9 @@ def viz_target_on_img(target_, intrinsic_, img_, r ,g, b):
         uv.append((u_, v_))  # orgin
         if 0 < v_ < img.shape[0] and 0 < u_ < img.shape[1]:
             pass
-            # img[v_, u_, 0] = b
-            # img[v_, u_, 1] = g
-            # img[v_, u_, 2] = r
+            img[v_, u_, 0] = b
+            img[v_, u_, 1] = g
+            img[v_, u_, 2] = r
     return img, uv
 
 
