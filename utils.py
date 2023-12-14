@@ -133,7 +133,7 @@ def load_txt(txt_path):
     return txt_data
 
 
-def backproject(depth, rgb, intrinsics, mask=None):
+def backproject(depth, intrinsics, mask=None):
     # REAL_intrinsics = [591.0125, 590.16775, 322.525, 244.11084]
     cam_fx, cam_fy, cam_cx, cam_cy = intrinsics
 
@@ -144,9 +144,16 @@ def backproject(depth, rgb, intrinsics, mask=None):
     xmap = np.array([[i_ for i_ in range(640)] for j_ in range(480)])
     ymap = np.array([[j_ for i_ in range(640)] for j_ in range(480)])
 
-    depth_masked = depth.flatten()[:, np.newaxis]
-    xmap_masked = xmap.flatten()[:, np.newaxis]
-    ymap_masked = ymap.flatten()[:, np.newaxis]
+    
+    # 可以添加额外的mask
+    if mask is None:
+        mask = np.ones_like(depth[:, :, 2])
+    mask_ = np.logical_and(mask, depth>0)
+    choose = mask_.flatten().nonzero()[0]
+
+    depth_masked = depth.flatten()[choose][:, np.newaxis]
+    xmap_masked = xmap.flatten()[choose][:, np.newaxis]
+    ymap_masked = ymap.flatten()[choose][:, np.newaxis]
     norm_scale = 1000.0
     pt2 = depth_masked / norm_scale
     pt0 = (xmap_masked - cam_cx) * pt2 / cam_fx
