@@ -133,6 +133,28 @@ def load_txt(txt_path):
     return txt_data
 
 
+def backproject(depth, rgb, intrinsics, mask=None):
+    # REAL_intrinsics = [591.0125, 590.16775, 322.525, 244.11084]
+    cam_fx, cam_fy, cam_cx, cam_cy = intrinsics
+
+    img_width = depth.shape[1]
+    img_height = depth.shape[0]
+    # xmap = np.array([[i_ for i_ in range(640)] for j_ in range(480)])
+    # ymap = np.array([[j_ for i_ in range(640)] for j_ in range(480)])
+    xmap = np.array([[i_ for i_ in range(640)] for j_ in range(480)])
+    ymap = np.array([[j_ for i_ in range(640)] for j_ in range(480)])
+
+    depth_masked = depth.flatten()[:, np.newaxis]
+    xmap_masked = xmap.flatten()[:, np.newaxis]
+    ymap_masked = ymap.flatten()[:, np.newaxis]
+    norm_scale = 1000.0
+    pt2 = depth_masked / norm_scale
+    pt0 = (xmap_masked - cam_cx) * pt2 / cam_fx
+    pt1 = (ymap_masked - cam_cy) * pt2 / cam_fy
+    pts = np.concatenate((pt0, pt1, pt2), axis=1)
+    return pts
+
+
 def save_pcd_to_obj(img_path, target_model, sampling_npts=2048, save_path=None):
     # load depth
     depth_path = img_path + '_depth.png'
