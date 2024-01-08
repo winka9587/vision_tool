@@ -1,7 +1,7 @@
 
 # Wild6D数据集重新组织
 
-Wild6D testset 结构
+### Wild6D testset 结构
 ```
 data
 ├── testset
@@ -32,9 +32,9 @@ data
 │       ├── mug
 ```
 
-组织思路
+### 组织思路
 
-所需要的内容
+所需内容
 - [x] class_ids 
 - [ ] bboxes (需要重新分割) 
 - [x] scales 
@@ -65,7 +65,7 @@ NOCS dataset的组织如下:
 ### pkl_annotations文件的内容
 ```, '', ''
 ├──.pkl (dict)
-|   ├──'num_frames'
+|   ├──'num_frames' (annotations的list长度)
 |   ├──'annotations' (list)
 |       ├──0 (dict)
 |           ├──'name' 'bowl/0049/2021-09-27--12-04-19/0000'
