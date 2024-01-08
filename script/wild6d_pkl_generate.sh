@@ -1,7 +1,11 @@
 #!/bin/bash
+# 为每个序列的每个文件生成单独的pkl文件
+
+conda activate SGAP_pack
 
 base_dir="/data4/cxx/dataset/Wild6D/test_set/pkl_annotations/"
 save_folder="/data4/cxx/dataset/Wild6D_manage/test/"  # 指定保存文件夹的路径
+dataset_root_path="/data4/cxx/dataset/Wild6D/test_set/"
 
 # 文件夹名称和对应代码的字典
 declare -A folder_codes=(
@@ -43,14 +47,13 @@ for category in "${!folder_codes[@]}"; do
             # 构建最终的保存路径（不包括 .pkl）
             final_save_path="${save_folder}/scene_${new_filename}"
             
-            python wild6d_pose_convert.py --input "$file" --output "$final_save_path"
-            # 复制文件到新路径
-            # cp "$file" "$final_save_path"
-            echo "Copied $file to $final_save_path"
+            # 处理文件到新路径
             if [ -d "$final_save_path" ]; then
                 echo "Dir already exists: $final_save_path"
+                echo "Load $file file to sequence $final_save_path"
+                python dataset_utils/wild6d_pose_convert.py "$file" "$final_save_path" "$dataset_root_path"
             else
-                echo "!!!!!!!!!!! Dir Not already exists: $final_save_path"
+                echo "!!!!!!!!!!! Dir Not exists: $final_save_path"
             fi
         done
     fi

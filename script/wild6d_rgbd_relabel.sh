@@ -24,24 +24,33 @@ for first_dir in "${first_level_dirs[@]}"; do
         # 查找并排序第三层目录
         third_level_dirs=$(find "$second_dir" -mindepth 1 -maxdepth 1 -type d | sort -V)
         for third_dir in $third_level_dirs; do
-            # 查找第四层的 'images' 目录
-            if [ -d "$third_dir/images" ]; then
-                echo "$third_dir/images"
-                # 对第一层目录下的处理次数进行计数
-                first_level_count=$((first_level_count + 1))
+            # 查找第四层的 'images' 或 'rgbd' 目录
+            fourth_dir_images="$third_dir/images"
+            fourth_dir_rgbd="$third_dir/rgbd"
 
-                color_cmd="script/wild6d_relabel_color.sh $third_dir/images/ $save_dir $color_from $color_to"
-                depth_cmd="script/data_relabel_suffix.sh $third_dir/images/ $save_dir $depth_from $depth_to"
-                mask_cmd="script/data_relabel_suffix.sh $third_dir/images/ $save_dir $mask_from $mask_to"
-
-                echo $color_cmd
-                echo $depth_cmd
-                echo $mask_cmd
-
-                bash $color_cmd
-                bash $depth_cmd
-                bash $mask_cmd
+            if [ -d "$fourth_dir_images" ]; then
+                fourth_dir="$fourth_dir_images"
+            elif [ -d "$fourth_dir_rgbd" ]; then
+                fourth_dir="$fourth_dir_rgbd"
+            else
+                continue
             fi
+
+            echo "$fourth_dir"
+            # 对第一层目录下的处理次数进行计数
+            first_level_count=$((first_level_count + 1))
+
+            color_cmd="script/wild6d_relabel_color.sh $fourth_dir/ $save_dir $color_from $color_to"
+            depth_cmd="script/data_relabel_suffix.sh $fourth_dir/ $save_dir $depth_from $depth_to"
+            mask_cmd="script/data_relabel_suffix.sh $fourth_dir/ $save_dir $mask_from $mask_to"
+
+            echo $color_cmd
+            echo $depth_cmd
+            echo $mask_cmd
+
+            bash $color_cmd
+            bash $depth_cmd
+            bash $mask_cmd
         done
     done
 
