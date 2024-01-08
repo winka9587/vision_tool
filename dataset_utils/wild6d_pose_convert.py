@@ -59,9 +59,10 @@ with open(pkl_path, 'rb') as f:
             print("save _meta.txt file to {}".format(metatxt_path))
         
         # 读取metadata, 保存其内参和图像尺寸到pkl文件
-        meta_path = os.path.join(arg3, file_path[:file_path.rfind('/')], 'metadata')  # 获取meta路径
-        meta_data = json.load(open(meta_path))
-        K = np.array(meta_data['K']).reshape(3, 3).T
+        # meta_path = os.path.join(arg3, file_path[:file_path.rfind('/')], 'metadata')  # 获取meta路径
+        # meta_data = json.load(open(meta_path))
+        # K = np.array(meta_data['K']).reshape(3, 3).T
+        K = result['intrinsics']  # 可以直接从pkl文件中读取内参K
         fx, fy, cx, cy = K[0, 0], K[1, 1], K[0, 2], K[1, 2]
         new_file['K'] = [fx, fy, cx, cy]
         new_file['h'] = meta_data['h']
