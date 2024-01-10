@@ -48,9 +48,8 @@ unset IFS
 # /data4/cxx/dataset/Wild6D/test_set/bottle/0001/1/images/
 # 或
 # /data4/cxx/dataset/Wild6D/test_set/bottle/0034/2021-09-16--18-45-29/images/ 或 /rgbd/
-# 提取路径的相关部分
 sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/rgbd/|\1|')
-if [[ "$sub_path0" == "$image_folder" ]]; then
+if [[ "$sub_path" == "$image_folder" ]]; then
     sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/images/|\1|')
 fi
 # 分解子路径为其组成部分

@@ -40,12 +40,15 @@ unset IFS
 
 # 提取路径的相关部分
 sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/rgbd/|\1|')
-if [[ "$sub_path0" == "$image_folder" ]]; then
+if [[ "$sub_path" == "$image_folder" ]]; then
     sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/images/|\1|')
 fi
 
 # 分解子路径为其组成部分
 IFS='/' read -r -a path_parts <<< "$sub_path"
+
+# echo "test"
+# echo $sub_path
 
 # 替换物品名称为对应的数字代码
 folder_code=${folder_codes[${path_parts[0]}]}

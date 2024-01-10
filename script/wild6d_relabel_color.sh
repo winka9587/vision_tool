@@ -141,7 +141,7 @@ unset IFS
 # 或
 # /data4/cxx/dataset/Wild6D/test_set/bottle/0034/2021-09-16--18-45-29/images/ 或 /rgbd/
 sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/rgbd/|\1|')
-if [[ "$sub_path0" == "$image_folder" ]]; then
+if [[ "$sub_path" == "$image_folder" ]]; then
     sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/images/|\1|')
 fi
 
