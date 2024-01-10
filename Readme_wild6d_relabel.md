@@ -86,3 +86,8 @@ pkl中的size的作用是用于生成nocs空间下的3d bbox，即size存储了�
 
 1. 需要单独为每个序列读取内参(因为wild6d每个序列有单独的内参), 存储在_label.pkl文件中
 2. (可能的) 单独为每个序列读取图像的尺寸h和w, 存储在_label.pkl文件中
+
+
+### to do
+
+1. 使用pose_data.py生成_list.txt文件

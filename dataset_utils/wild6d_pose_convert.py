@@ -35,9 +35,9 @@ with open(pkl_path, 'rb') as f:
         new_file['instance_ids'] = [1]
         new_file['class_ids'] = [result['annotations'][i]['class_id']]
         new_file['scales'] = np.array([1.0])
-        new_file['size'] = result['annotations'][i]['size'][np.newaxis, ...]
-        new_file['rotations'] = result['annotations'][i]['rotation'][np.newaxis, ...]
-        new_file['translations'] = result['annotations'][i]['translation'][np.newaxis, ...]
+        new_file['size'] = result['annotations'][i]['size'][np.newaxis, ...].astype(np.float32)
+        new_file['rotations'] = result['annotations'][i]['rotation'][np.newaxis, ...].astype(np.float32)
+        new_file['translations'] = result['annotations'][i]['translation'][np.newaxis, ...].astype(np.float32)
         formatted_number = f"{i:04d}_mask.png"
         full_path = os.path.join(arg2, formatted_number)
         # 读取mask, 获得其bboxes
@@ -45,6 +45,14 @@ with open(pkl_path, 'rb') as f:
         y1, x1, y2, x2 = find_bounding_box_2d(mask)
         new_file['model_list'] = [1]
         new_file['bboxes'] = np.array([[y1, x1, y2, x2]])  #  rmin, rmax, cmin, cmax  (y对应r, x对应c)
+        new_file['gt_handle_visibility'] = np.array([1])
+        
+        sRT = np.identity(4, dtype=np.float32)
+        sRT[:3, :3] = result['annotations'][i]['rotation']
+        sRT[:3, 3] = result['annotations'][i]['translation']
+        new_file['poses'] = sRT[np.newaxis, ...].astype(np.float32)
+        
+        
         pkl_path = full_path.replace("_mask.png", "_label.pkl")
         metatxt_path = full_path.replace("_mask.png", "_meta.txt")
         # 创建_meta.txt文件
@@ -59,10 +67,10 @@ with open(pkl_path, 'rb') as f:
             print("save _meta.txt file to {}".format(metatxt_path))
         
         # 读取metadata, 保存其内参和图像尺寸到pkl文件
-        # meta_path = os.path.join(arg3, file_path[:file_path.rfind('/')], 'metadata')  # 获取meta路径
-        # meta_data = json.load(open(meta_path))
-        # K = np.array(meta_data['K']).reshape(3, 3).T
-        K = result['intrinsics']  # 可以直接从pkl文件中读取内参K
+        meta_path = os.path.join(arg3, file_path[:file_path.rfind('/')], 'metadata')  # 获取meta路径
+        meta_data = json.load(open(meta_path))
+        K = np.array(meta_data['K']).reshape(3, 3).T
+        # K = result['intrinsics']  # 可以直接从pkl文件中读取内参K
         fx, fy, cx, cy = K[0, 0], K[1, 1], K[0, 2], K[1, 2]
         new_file['K'] = [fx, fy, cx, cy]
         new_file['h'] = meta_data['h']

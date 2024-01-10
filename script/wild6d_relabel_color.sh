@@ -136,8 +136,14 @@ IFS=$'\n' sorted_base_names=($(sort -n <<<"${base_names[*]}"))
 unset IFS
 
 # 提取路径的相关部分
-# 假设路径格式为 /data4/cxx/dataset/Wild6D/test_set/bottle/0001/1/images/
-sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/images/|\1|')
+# 假设路径格式为 
+# /data4/cxx/dataset/Wild6D/test_set/bottle/0001/1/images/
+# 或
+# /data4/cxx/dataset/Wild6D/test_set/bottle/0034/2021-09-16--18-45-29/images/ 或 /rgbd/
+sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/rgbd/|\1|')
+if [[ "$sub_path0" == "$image_folder" ]]; then
+    sub_path=$(echo "$image_folder" | sed 's|.*/Wild6D/test_set/\(.*\)/images/|\1|')
+fi
 
 # 分解子路径为其组成部分
 IFS='/' read -r -a path_parts <<< "$sub_path"
@@ -159,6 +165,12 @@ new_sub_path="${folder_code}${path_parts[1]}${last_part}"
 
 # 生成最终的保存路径
 final_save_folder="$save_folder/scene_$new_sub_path"
+
+# 创建txt文件存储文件夹之间的映射关系
+txt_file="$save_folder/folder_refer.txt"
+> "$txt_file"
+echo "$image_folder" >> "$txt_file"
+echo "$final_save_folder" >> "$txt_file"
 
 # 检查并创建最终的保存路径
 if [ ! -d "$final_save_folder" ]; then

@@ -10,6 +10,9 @@ depth_to="_depth.png"
 mask_from="-mask.png"
 mask_to="_oldmask.png"
 
+txt_file="$save_dir/folder_refer.txt"
+> "$txt_file"
+
 # 定义第一层目录
 first_level_dirs=("bottle" "bowl" "camera" "laptop" "mug")
 
@@ -36,7 +39,8 @@ for first_dir in "${first_level_dirs[@]}"; do
                 continue
             fi
 
-            echo "$fourth_dir"
+
+
             # 对第一层目录下的处理次数进行计数
             first_level_count=$((first_level_count + 1))
 
@@ -44,13 +48,15 @@ for first_dir in "${first_level_dirs[@]}"; do
             depth_cmd="script/data_relabel_suffix.sh $fourth_dir/ $save_dir $depth_from $depth_to"
             mask_cmd="script/data_relabel_suffix.sh $fourth_dir/ $save_dir $mask_from $mask_to"
 
-            echo $color_cmd
-            echo $depth_cmd
-            echo $mask_cmd
+            # echo $color_cmd
+            # echo $depth_cmd
+            # echo $mask_cmd
 
             bash $color_cmd
             bash $depth_cmd
             bash $mask_cmd
+            refer_cmd="script/wild6d_folder_refer.sh $fourth_dir/ $save_dir $color_from $color_to"
+            bash $refer_cmd
         done
     done
 
