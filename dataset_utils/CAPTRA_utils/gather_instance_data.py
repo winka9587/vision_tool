@@ -15,7 +15,9 @@
         project 换成 calculate_2d_projections
         backproject 换成 backproject2
         
-    3. 本文件中所有带有 # from wild6d 的函数都是从wild6d中复制过来的, 用于替换CAPTRA中的函数
+    3.get_3d_bbox 用于使用 _label.pkl文件中的size, 生成nocs空间下的3d包围盒
+    
+    4.本文件中所有带有 # from wild6d 的函数都是从wild6d中复制过来的, 用于替换CAPTRA中的函数
 
 
 """
