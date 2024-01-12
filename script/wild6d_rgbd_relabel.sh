@@ -52,10 +52,10 @@ for first_dir in "${first_level_dirs[@]}"; do
             # echo $depth_cmd
             # echo $mask_cmd
 
-            bash $color_cmd
-            bash $depth_cmd
-            bash $mask_cmd
-            refer_cmd="script/wild6d_folder_refer.sh $fourth_dir/ $save_dir $color_from $color_to"
+            # bash $color_cmd
+            # bash $depth_cmd
+            # bash $mask_cmd
+            refer_cmd="script/wild6d_folder_refer.sh $fourth_dir/ $save_dir"
             bash $refer_cmd
         done
     done

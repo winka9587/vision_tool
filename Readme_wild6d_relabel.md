@@ -91,3 +91,8 @@ pkl中的size的作用是用于生成nocs空间下的3d bbox，即size存储了�
 ### to do
 
 1. 使用pose_data.py生成_list.txt文件
+
+
+### CAPTRA代码的修改
+
+1. 读取的_pose.pkl来获取gt位姿, 需要替换为读取_label.pkl文件, key为['poses']

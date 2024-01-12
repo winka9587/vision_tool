@@ -166,12 +166,6 @@ new_sub_path="${folder_code}${path_parts[1]}${last_part}"
 # 生成最终的保存路径
 final_save_folder="$save_folder/scene_$new_sub_path"
 
-# 创建txt文件存储文件夹之间的映射关系
-txt_file="$save_folder/folder_refer.txt"
-> "$txt_file"
-echo "$image_folder" >> "$txt_file"
-echo "$final_save_folder" >> "$txt_file"
-
 # 检查并创建最终的保存路径
 if [ ! -d "$final_save_folder" ]; then
     mkdir -p "$final_save_folder"
