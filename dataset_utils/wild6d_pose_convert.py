@@ -60,7 +60,8 @@ with open(pkl_path, 'rb') as f:
         file_path = result['annotations'][0]['name']
         category_name = file_path[:file_path.find('/')]
         cat_id = cat_names.index(category_name) + 1
-        meta_txt_ctx = "1 {} {}".format(cat_id, category_name+"_wild6d")
+        # meta_txt_ctx = "1 {} {}".format(cat_id, category_name+"_wild6d")
+        meta_txt_ctx = "1 {} {}".format(cat_id, arg2.split('/')[-1].split('\\')[-1]+"_instancemodelwild6d")
         with open(metatxt_path, 'w') as meta_txt_file:
             meta_txt_file.write(meta_txt_ctx)
             meta_txt_file.close()

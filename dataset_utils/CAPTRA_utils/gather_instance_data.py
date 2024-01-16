@@ -368,7 +368,7 @@ def gather_instances(list_path, data_path, model_path, output_path, instances,
 
 
 def gather_instance(list_path, data_path, model_path, output_path, instance,
-                    flip=True, real=True, img_per_folder=100, render_rgb=False):
+                    flip=True, real=True, img_per_folder=10000, render_rgb=False):
     # 获得实例的所有路径
     meta_path = pjoin(list_path, f'{instance}.txt')
     with open(meta_path, 'r') as f:

@@ -1,4 +1,4 @@
-# python get_instance_list.py --data_path=/data4/cxx/dataset/Wild6D_manage --data_type=test --list_path=/data4/cxx/dataset/instance_list
+# python dataset_utils/CAPTRA_utils/get_instance_list.py --data_path=/data4/cxx/dataset/Wild6D_manage --data_type=test --list_path=/data4/cxx/dataset/instance_list
 python dataset_utils/CAPTRA_utils/gather_instance_data.py --data_path=/data4/cxx/dataset/Wild6D_manage --data_type=test --list_path=/data4/cxx/dataset/instance_list --output_path=/data4/cxx/dataset/render --category=1
 python dataset_utils/CAPTRA_utils/gather_instance_data.py --data_path=/data4/cxx/dataset/Wild6D_manage --data_type=test --list_path=/data4/cxx/dataset/instance_list --output_path=/data4/cxx/dataset/render --category=2
 python dataset_utils/CAPTRA_utils/gather_instance_data.py --data_path=/data4/cxx/dataset/Wild6D_manage --data_type=test --list_path=/data4/cxx/dataset/instance_list --output_path=/data4/cxx/dataset/render --category=3
