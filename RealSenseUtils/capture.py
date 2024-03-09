@@ -10,7 +10,7 @@ import pyrealsense2 as rs
 """
 
 
-def capture_frames():
+def capture_frames(n=5):
     """
     Captures frames from the RealSense camera and saves color, depth, and IMU data.
 
@@ -114,11 +114,26 @@ def capture_frames():
                 motion_frame = aligned_frames.first_or_default(rs.stream.accel)
                 motion_data = motion_frame.as_motion_frame().get_motion_data()
 
+            # without padding
+            # if record:
+            #     cv2.imwrite(path + "/color/" + str(count) + ".png", color_image)
+            #     cv2.imwrite(path + "/depth/" + str(count) + ".png", depth_image)
+            #     if args.imu:
+            #         np.savetxt(path + "/imu/" + str(count) + ".txt", motion_data)
+            #     print(count)
+            #     count += 1
+            # padding zeros
             if record:
-                cv2.imwrite(path + "/color/" + str(count) + ".png", color_image)
-                cv2.imwrite(path + "/depth/" + str(count) + ".png", depth_image)
+                # 使用str.zfill()方法填充count
+                padded_count = str(count).zfill(n)
+                # 或者使用str.format()方法填充count
+                # padded_count = "{:0{n}d}".format(count, n=n)
+
+                cv2.imwrite(f"{path}/color/{padded_count}.png", color_image)
+                cv2.imwrite(f"{path}/depth/{padded_count}.png", depth_image)
                 if args.imu:
-                    np.savetxt(path + "/imu/" + str(count) + ".txt", motion_data)
+                    # 保存IMU数据时同样应用填充
+                    np.savetxt(f"{path}/imu/{padded_count}.txt", motion_data)
                 print(count)
                 count += 1
 
