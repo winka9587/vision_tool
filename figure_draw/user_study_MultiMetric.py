@@ -94,16 +94,23 @@ class Group:
 # Group4_V = [0.038, 1.06, 58.19, 3.74, 56.34, 0.74]
 
 # 将最后一个元素向前移动三个位置
-Group1_E = [0.80, 2.33, 0, 665.00, 381.33, 313.67]
-Group1_V = [0.16, 0.47, 0, 76.89, 58.63, 61.88]
-Group5_E = [0.97, 0.50, 0.17, 313.50, 17.00, 296.50]
-Group5_V = [0.074, 0.76, 0.37, 48.34, 3.96, 48.63]
-Group2_E = [0.93, 1.00, 0, 457.58, 20.23, 437.35]
-Group2_V = [0.074, 0.58, 0, 30.10, 4.58, 29.10]
-Group3_E = [0.58, 0.83, 3.83, 851.80, 22.16, 829.67]
-Group3_V = [0.21, 0.37, 1.34, 89.48, 5.01, 87.55]
-Group4_E = [0.96, 2.16, 0.67, 376.50, 20.00, 356.58]
-Group4_V = [0.038, 1.06, 0.74, 58.19, 3.74, 56.34]
+# ["Blueprint", "2D Marker", "Model Fixed", "Manual Switch", "AR Guidance(Ours)"]
+Group1_E =   [0.80, 2.50, 0.00, 562.50, 313.33, 264.17]
+Group1_Min = [0.60, 2.00, 0.00, 411.00, 180.00, 137.00]
+Group1_Max = [1.00, 4.00, 0.00, 742.00, 436.00, 393.00]
+Group1_V =   [0.16, 0.76, 0.00, 120.65, 86.11,  76.97]
+Group5_E = [0.97, 0.50, 0.17, 313.50, 17.00,  296.50]
+Group5_V = [0.07, 0.76, 0.37, 48.34,  3.96,   48.63]
+Group2_E = [0.93, 1.00, 0.00, 457.58, 20.23,  437.35]
+Group2_V = [0.07, 0.58, 0.00, 30.10,  4.58,   29.10]
+Group3_E = [0.58, 0.83, 3.83, 851.80, 22.16,  829.67]
+Group3_V = [0.21, 0.37, 1.34, 89.48,  5.01,   87.55]
+Group4_E = [0.96, 2.16, 0.67, 376.50, 20.00,  356.58]
+Group4_V = [0.04, 1.06, 0.74, 58.19,  3.74,   56.34]
+
+group_names = ["Effectiveness↑", "Error Count↓", "Tracking Failure↓", "Total Time↓", "Judgment Time↓", "Assembly Time↓"]
+y_limit = [1.00*1.5, 4.0, 4.00*1.5, 700.00*1.5, 700.00*1.5, 700.00*1.5]
+y_axis_name = ['efffectiveness', 'error count(number)', 'tracking failure(times)', 'used time', 'judgment time(s)', 'assembly time(s)']
 
 # Enjoyment_E = [2.00, 2.00, 3.33, 3.00, 4.17]
 # Enjoyment_V = [0.82, 0.82, 0.47, 0.81, 0.69]
@@ -117,8 +124,6 @@ Group4_V = [0.038, 1.06, 0.74, 58.19, 3.74, 56.34]
 # y_limit = []  # 每个的最大值
 # y_limit = [665.00, 0.97, 2.33, 381.33, 829, 3.83]
 # y_limit = [1.00*1.5, 3.00*1.5, 700.00*1.5, 500.00, 900.00*1.5, 4.00*1.5]
-y_limit = [1.00*1.5, 4.0, 4.00*1.5, 700.00*1.5, 700.00*1.5, 700.00*1.5]
-y_axis_name = ['efffectiveness', 'error count(number)', 'tracking failure(times)', 'used time', 'judgment time(s)', 'assembly time(s)']
 
 # all_attributes = ['Enjoyment', 'Focus', 'Friendliness', 'Usability']
 # all_attributes = ['Efficiency', 'Effectiveness', 'Error Count', 'Judgment Time', 'Assembly Time', 'Tracking Failure']
@@ -208,7 +213,6 @@ for i, ax in enumerate(axs):
     ax.set_xticks(group_centers)
     # ax.set_xticklabels([f"Group {i+1}" for i in range(group_num)], rotation=0, ha="center")
     # group_names = ["Group1", "Group2", "Group3", "Group4", "Group5"]
-    group_names = ["Effectiveness↑", "Error Count↓", "Tracking Failure↓", "Total Time↓", "Judgment Time↓", "Assembly Time↓"]
     ax.set_xticklabels([group_names[i]], rotation=0, ha="center", fontweight='bold', fontfamily='Times New Roman')
 
     # 设置x轴字体大小
