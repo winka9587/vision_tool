@@ -1,0 +1,1 @@
+ffmpeg.exe -i F:/3dgs.webm -c:v libx264 -preset slow -crf 22 -vsync 2 -c:a aac -b:a 128k 3dgs.mp4

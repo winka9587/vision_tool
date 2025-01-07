@@ -53,7 +53,7 @@ Usability_Min = [2.00, 3.00, 3.00, 2.00, 3.00]
 Usability_Max = [4.00, 5.00, 5.00, 4.00, 5.00]
 Usability_V = [0.69, 0.82, 0.76, 0.58, 0.69]
 
-group_names = ["Blueprint", "2D Marker", "Model Fixed", "Manual Switch", "AR Guidance(Ours)"]
+group_names = ["Blueprint (0.7955)", "2D Marker (0.8096)", "Model-Invariant (0.8749)", "Manual Switching (0.7760)", "AR Guidance(Ours) (0.7048)"]
 all_attributes = ['Enjoyment', 'Focus', 'Friendliness', 'Usability']
 all_attributes_values = {}
 
