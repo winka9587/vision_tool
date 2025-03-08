@@ -38,7 +38,7 @@ def capture_frames(n=5):
 
     width = 640
     height = 480
-    fps = 30
+    fps = 60
 
     print(f"Found {len(rs.context().query_devices())} realsense devices!")
 

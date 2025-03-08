@@ -1,5 +1,17 @@
+# to do list
+
+- [ ] 目前保存1.png, 2.png, 可选择填充0以及填充位数, 例如0001.png, 0002.png, ...
+
+- [ ] 指定从0开始还是从1开始计数
+
+- [ ] 
+
 # PointCloud Vision Tools
 ## PointCloudRender
+
+<details>
+  <summary>点云可视化函数+参数</summary>
+  
 
 PointCloudRender:提供对点云的可视化,输入点云的格式统一为   numpy.array(), shape:(n, 3)
 
@@ -55,6 +67,9 @@ color_list: list of color (every color like np.array([255,0,0]))
 angle_offset: angle about x,y,z axis, to ajust pointcloud init rotation(every value range -2~2, numpy.float)
 
 result_dir: like: /data/cat, suggest create a folder for single pointcloud
+  
+</details>
+
 
 ## data preprocessing
 
