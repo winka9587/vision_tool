@@ -147,7 +147,7 @@ def backproject(depth, intrinsics, mask=None):
     
     # 可以添加额外的mask
     if mask is None:
-        mask = np.ones_like(depth[:, :, 2])
+        mask = np.ones_like(depth)
     mask_ = np.logical_and(mask, depth>0)
     choose = mask_.flatten().nonzero()[0]
 
@@ -159,7 +159,7 @@ def backproject(depth, intrinsics, mask=None):
     pt0 = (xmap_masked - cam_cx) * pt2 / cam_fx
     pt1 = (ymap_masked - cam_cy) * pt2 / cam_fy
     pts = np.concatenate((pt0, pt1, pt2), axis=1)
-    return pts
+    return pts, choose
 
 
 def save_pcd_to_obj(img_path, target_model, sampling_npts=2048, save_path=None):
