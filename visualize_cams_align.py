@@ -8,8 +8,74 @@ from pathlib import Path
 from scipy.spatial.transform import Rotation
 import trimesh
 import imageio.v2 as imageio
-from dust3r.utils.geometry import geotrf
 import PIL.Image
+
+import torch
+def geotrf(Trf, pts, ncol=None, norm=False):
+    # function from dust3r.utils.geometry.geotrf
+    # if you have a dust3r repo, use "from dust3r.utils.geometry import geotrf"
+    """ Apply a geometric transformation to a list of 3-D points.
+
+    H: 3x3 or 4x4 projection matrix (typically a Homography)
+    p: numpy/torch/tuple of coordinates. Shape must be (...,2) or (...,3)
+
+    ncol: int. number of columns of the result (2 or 3)
+    norm: float. if != 0, the resut is projected on the z=norm plane.
+
+    Returns an array of projected 2d points.
+    """
+    assert Trf.ndim >= 2
+    if isinstance(Trf, np.ndarray):
+        pts = np.asarray(pts)
+    elif isinstance(Trf, torch.Tensor):
+        pts = torch.as_tensor(pts, dtype=Trf.dtype)
+
+    # adapt shape if necessary
+    output_reshape = pts.shape[:-1]
+    ncol = ncol or pts.shape[-1]
+
+    # optimized code
+    if (isinstance(Trf, torch.Tensor) and isinstance(pts, torch.Tensor) and
+            Trf.ndim == 3 and pts.ndim == 4):
+        d = pts.shape[3]
+        if Trf.shape[-1] == d:
+            pts = torch.einsum("bij, bhwj -> bhwi", Trf, pts)
+        elif Trf.shape[-1] == d + 1:
+            pts = torch.einsum("bij, bhwj -> bhwi", Trf[:, :d, :d], pts) + Trf[:, None, None, :d, d]
+        else:
+            raise ValueError(f'bad shape, not ending with 3 or 4, for {pts.shape=}')
+    else:
+        if Trf.ndim >= 3:
+            n = Trf.ndim - 2
+            assert Trf.shape[:n] == pts.shape[:n], 'batch size does not match'
+            Trf = Trf.reshape(-1, Trf.shape[-2], Trf.shape[-1])
+
+            if pts.ndim > Trf.ndim:
+                # Trf == (B,d,d) & pts == (B,H,W,d) --> (B, H*W, d)
+                pts = pts.reshape(Trf.shape[0], -1, pts.shape[-1])
+            elif pts.ndim == 2:
+                # Trf == (B,d,d) & pts == (B,d) --> (B, 1, d)
+                pts = pts[:, None, :]
+
+        if pts.shape[-1] + 1 == Trf.shape[-1]:
+            Trf = Trf.swapaxes(-1, -2)  # transpose Trf
+            pts = pts @ Trf[..., :-1, :] + Trf[..., -1:, :]
+        elif pts.shape[-1] == Trf.shape[-1]:
+            Trf = Trf.swapaxes(-1, -2)  # transpose Trf
+            pts = pts @ Trf
+        else:
+            pts = Trf @ pts.T
+            if pts.ndim >= 2:
+                pts = pts.swapaxes(-1, -2)
+
+    if norm:
+        pts = pts / pts[..., -1:]  # DONT DO /= BECAUSE OF WEIRD PYTORCH BUG
+        if norm != 1:
+            pts *= norm
+
+    res = pts[..., :ncol].reshape(*output_reshape, ncol)
+    return res
+
 
 # def convert_pose_for_viz(pose):
 #     # pose[:3, :3] = R.T  
@@ -173,6 +239,10 @@ if __name__ == "__main__":
     parser.add_argument("--thresholds_csv", type=str, default=None)
     args = parser.parse_args()
 
+    from kaggle_utils.metric import mAA_on_cameras
+    skip_top_thresholds = 2
+    to_dec = 3
+
     gt_data = read_csv(args.gt_csv)
     user_data = read_csv(args.pred_csv)
     thresholds_data, _ = tth_from_csv(args.thresholds_csv)
@@ -201,31 +271,6 @@ if __name__ == "__main__":
     imgs_pred, poses_pred_aligned = [], []
     poses_pred_raw = []
 
-    # for img_name, cam in gt_data[args.dataset][gt_scene_name].items():
-    #     img_path = os.path.join(args.img_root, 'train' if args.is_train else 'test' , args.dataset, img_name)
-    #     imgs_gt.append(img_path)
-
-    #     R_w2c = cam["R"]
-    #     t_w2c = cam["t"]
-    #     pose = np.eye(4)
-    #     pose[:3, :3] = np.array(R_w2c)
-    #     pose[:3, 3] = np.array(t_w2c)
-    #     poses_gt.append(pose)
-
-    # for img_name, cam in user_data[args.dataset][user_scene_name].items():
-    #     img_path = os.path.join(args.img_root, 'train' if args.is_train else 'test', args.dataset, img_name)
-    #     imgs_pred.append(img_path)
-
-    #     R_w2c = np.array(cam["R"])  # ✅ 保留旋转信息
-    #     t_w2c = np.array(cam["t"])
-        
-    #     pose = np.eye(4)
-    #     pose[:3, :3] = R_w2c
-    #     pose[:3, 3] = t_w2c
-    #     poses_pred_raw.append(pose)
-
-    #     pose_aligned = pose_transform @ pose  # 对齐（包括方向）
-    #     poses_pred_aligned.append(pose_aligned)
     # GT poses
     for img_name, cam in gt_data[args.dataset][gt_scene_name].items():
         img_path = os.path.join(args.img_root, 'train' if args.is_train else 'test', args.dataset, img_name)
@@ -288,3 +333,58 @@ if __name__ == "__main__":
         poses_pred_aligned,
         imgs_pred,
     )
+
+    # ✅ ➕ 计算当前 img_prefix 的 mAA
+    centers_gt = np.array([pose[:3, 3] for pose in poses_gt])
+    centers_pred = np.array([pose[:3, 3] for pose in poses_pred_aligned])
+    ths = thresholds_data[args.dataset][gt_scene_name]
+
+    err = np.linalg.norm(centers_pred - centers_gt, axis=1, keepdims=True)
+    err = np.repeat(err, len(ths), axis=1)  # shape=(N, len(ths))
+    
+    # ✅ 打印每张图像的得分表格
+    # ➤ 找出被剔除的图像（仅用于标注）
+    sorted_indices = np.argsort(err[:, 0] if err.ndim == 2 else err)
+    removed_indices = set(sorted_indices[:to_dec])
+
+    print("\n📊 Per-image registration table:")
+    ths_str = [f"{t:.2f}" for t in ths]
+    header = "| Image Name".ljust(26) + "|" + "".join([f" {t:>5} " for t in ths_str]) + "| Error  | mAA (%) | Removed?"
+    print(header)
+    print("-" * len(header))
+
+    # 按图像名排序
+    image_err_pairs = sorted(enumerate(zip(imgs_gt, err)), key=lambda x: os.path.basename(x[1][0]))
+
+    for idx, (path, e) in image_err_pairs:
+        name = os.path.basename(path)
+        accs = [(ei <= t) for ei, t in zip(e, ths)]
+        acc_str = "".join([f"  {'✅ ' if ok else '❌ '}  " for ok in accs])
+        abs_err = float(e[0])
+        acc_ratio = sum(accs) / len(ths) * 100
+        flag = "✅ Removed" if idx in removed_indices else ""
+        print(f"| {name:<24}|{acc_str}| {abs_err:6.2f} | {acc_ratio:6.2f} | {flag}")
+
+
+
+    # 打印当前img_prefix的mAA
+    mAA = mAA_on_cameras(err, ths, len(poses_gt), skip_top_thresholds=skip_top_thresholds, to_dec=to_dec)
+
+    print(f"✅ Scene mAA for {args.dataset}/{gt_scene_name}: {mAA * 100:.2f}%")
+    
+    # 规模占比
+    # 🧮 当前 scene 图像数量
+    num_scene_images = len(poses_gt)
+
+    # 🧮 当前 dataset 总图像数量
+    num_total_images = sum([len(scene_data) for scene_data in gt_data[args.dataset].values()])
+    scene_ratio = num_scene_images / num_total_images * 100
+
+    # 🧮 当前 dataset 的整体 mAA（已由 score_transf 返回）
+    dataset_mAA = dataset_transf[args.dataset].get("__avg__", None)
+    if dataset_mAA is None:
+        print("⚠️ Cannot find dataset-level mAA score.")
+    else:
+        relative_ratio = mAA / dataset_mAA * 100
+        print(f"📊 Scene coverage in dataset: {num_scene_images}/{num_total_images} ({scene_ratio:.2f}%)")
+        print(f"📈 Scene mAA vs dataset mAA: {mAA * 100:.2f}% / {dataset_mAA * 100:.2f}% ({relative_ratio:.2f}%)")
